@@ -1,0 +1,29 @@
+* {
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
+}
+
+.grandParent {
+  background-color: aqua;
+  width: 60%;
+  height: 500px;
+  margin: 150px auto;
+  text-align: center;
+}
+
+.Parent {
+  background-color: rgb(0, 255, 8);
+  width: 60%;
+  height: 80%;
+  margin: 20px auto;
+  text-align: center;
+}
+
+.Child {
+  background-color: rgb(255, 0, 208);
+  width: 60%;
+  height: 80%;
+  margin: 20px auto;
+  text-align: center;
+}

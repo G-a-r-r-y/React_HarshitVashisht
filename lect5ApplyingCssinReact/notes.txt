@@ -1,0 +1,28 @@
+Note - Koi component import karni hai toh make sure woh pehle exported hai?
+
+Applying Css - 
+
+1. Simple way 
+Bas woh div ki class ko style kardo in css file
+Note - we use className not class
+
+2. Using a user created css object inside the function only
+Things to keep in mind - 
+a. We use CamelCase to write properties in the css obj 
+   i.e we write fontFamily not font-family 
+b. we write style={cssObj} in the div tag
+c. Jab bhi hum js return tag (jsx) mei likhte hai, 
+   usse inside {} likhna hota hai 
+
+3. Using tertiary operator with classes 
+Things to keep in mind - 
+a. We use className here 
+b. <div className={isDark ? "bg-dark" : ""}>
+   we use "" not null because warna null class add ho jayegi
+c. or use <div className={isDark && "bg-dark"}>
+
+4. Using tertiary operator with multiple classes 
+Things to keep in mind - 
+a. Use string literals
+b. Jab bhi hum js return tag (jsx) mei likhte hai, 
+   usse inside {} likhna hota hai 

@@ -1,0 +1,248 @@
+Omdb api - This gives us the api we will use
+
+Process - 
+1. Go to API key and choose the free option 
+2. Now open mail and click the link to activate your URL
+3. Key activated - aaf7084
+
+Note - iski documentation padhlena for knowing on how to use 
+
+-------------------------------------------------------------------------
+.env File - 
+
+Process - 
+1. Create a .env file at the same lvl as src folder
+2. Write ----> VITE_OMDB_API_KEY=aaf7084
+
+Note - exactly aise hi likhna hai, no more space or colons
+
+Iske baad hum src ke ander ek constants file banayenge 
+jismei hum yeh environment variable ko acche se likh denge
+
+Ex - // in constants.js 
+
+export const apiKey = import.meta.env.VITE_OMDB_API_KEY;
+
+Note - we have to write whole import.meta.env to use the key 
+
+-------------------------------------------------------------------------
+
+Then import the required packages - 
+1. npm install react-router-dom 
+2. npm install axios (For api calling)
+
+-------------------------------------------------------------------------
+
+Note - Remember the difference between pages and components.
+       Components are part of a page.
+
+-------------------------------------------------------------------------
+Form Component of react-router-dom - 
+
+We are using Form Component of react-router-dom for getting input here.
+
+Code - 
+
+import React from "react";
+import { Form } from "react-router-dom";
+
+function SearchForm() {
+  return (
+    <Form method="GET">
+      <input type="text" name="search" id="search" required/>
+      <button type="submit">Search</button>
+    </Form>
+  );
+}
+
+export default SearchForm;
+
+Note - 1. name attribute dena is must cause wahi key value pair ki tarah
+          query parameter banke aata hai. 
+          Ex - http://localhost:5173/?search=Spider
+       2. Form component is bydefault GET in nature toh likhna zaruri nhi hai 
+          but we still do that as a convention.
+
+-------------------------------------------------------------------------------------
+
+Process to get the key value from the input so that we can create a specific api - 
+
+1. Make a loader function in the Home Page 
+2. loader function gets called whenever the Home page re-renders
+   and it contains the query parameters as args in it.
+3. Toh pehle toh key value pair would just have "/" as its value but 
+   jaise hi hum form ko kuch input denge and it re-renders the home page, 
+   key value pair would change to the desired output and ab loader function ke 
+   ander se woh specific value nikaal lo 
+
+Code - //In Home Page - 
+
+import React from "react";
+import SearchForm from "../Components/SearchForm";
+import MoviesList from "../Components/MoviesList";
+
+export function loader({ request }) {
+  const url = new URL(request.url);
+  const searchTerm = url.searchParams.get("search");
+  console.log(searchTerm);
+  return null;
+}
+
+function Home() {
+  return (
+    <div>
+      <SearchForm />
+      <MoviesList />
+    </div>
+  );
+}
+
+export default Home;
+
+Note - url.searchParams.get("search");
+
+//In app.js (for loader calling) - 
+
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+
+import { apiKey } from "./constants";
+import Home from "./Pages/Home";
+import Root from "./Pages/Root";
+import SingleMovieDetails from "./Pages/SingleMovieDetails";
+
+//Loader functions  -
+import { loader as MovieLoader } from "./Pages/Home";
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<Root />}>
+      <Route index element={<Home />} loader={MovieLoader} />
+      <Route path="/detail/:imdbId" element={<SingleMovieDetails />} />
+    </Route>
+  )
+);
+
+function App() {
+  return <RouterProvider router={router} />;
+}
+
+export default App;
+
+-------------------------------------------------------------------------------------------------------
+
+Ab bas uss value ko use karte huye desired url banao and then use that url + axios to fetch the 
+desired data and then pass on that data to moviesList component for rendering.
+
+Code  - //Home.jsx 
+
+import axios from "axios";
+import SearchForm from "../Components/SearchForm";
+import MoviesList from "../Components/MoviesList";
+
+import { apiKey } from "../constants";
+import { useLoaderData } from "react-router-dom";
+
+export async function loader({ request }) {
+  const url = new URL(request.url);
+  const searchTerm = url.searchParams.get("search");
+  const movieSearchEndpoint = `http://www.omdbapi.com/?apiKey=${apiKey}&s=${searchTerm}`;
+  const response = await axios.get(movieSearchEndpoint);
+  return response.data;
+}
+
+function Home() {
+  const data = useLoaderData();
+  return (
+    <div>
+      <SearchForm />
+      <MoviesList data={data} />
+    </div>
+  );
+}
+
+export default Home;
+
+Note - 1. Remember the syntax for axios 
+       2. We are returning an object where main data is stored in reponse.data 
+       VERY VERY IMPORTANT!!!! - 
+       3. Loader function is written in a Page outside main function, called in app.jsx 
+          and its returned value is accessed inside the main functin of the page using 
+          useLoaderData().
+
+-------------------------------------------------------------------------------------------
+
+// In MoivesList.jsx - 
+
+import React from "react";
+
+function MoviesList({ data }) {
+  const movieApiResponse = data;
+  if (movieApiResponse && movieApiResponse.Response === "False") {
+    return <h1>{movieApiResponse.Error || "No result Found"}</h1>;
+  }
+  return (
+    <div>
+      {movieApiResponse.Search.map((movie) => {
+        return <p>{movie.Title}</p>;
+      })}
+    </div>
+  );
+}
+
+export default MoviesList;
+
+--------------------------------------------------------------------------------
+
+Setting value in searchBox - 
+
+Bas query selector se value nikaalke usse input component mei pass kardo
+and phir defaultValue ko woh set kardo 
+
+--------------------------------------------------------------------------------
+
+Error handling in React dhung se smjh nhi aaya, yeh alag se online padhna padhega.
+Abhi iss project mei bas mainly try and catch use kiya hai for errors meine.
+
+Note - There is something like {useRouteError} in React 
+
+------------------------------------------------------------------------------------
+Note - We redefined root layout for loading with a spinning wheel 
+       Yeh spinning wheel assets mei as svg stored hai. 
+
+Code - 
+
+import React from "react";
+import { Outlet } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigation } from "react-router-dom";
+import styles from "./Root.module.css";
+import LoadingSpinner from "../assets/LoadingSpinner.svg";
+
+function Root() {
+  const navigation = useNavigation();
+  return (
+    <div>
+      <nav className={`container ${styles.nav}`}>
+        <Link to="/">
+          <h1>Movie Search</h1>
+        </Link>
+      </nav>
+
+      {navigation.state === "loading" ? (
+        <img src={LoadingSpinner} alt="Loading..." className="loadingSpinner" />
+      ) : (
+        <Outlet />
+      )}
+    </div>
+  );
+}
+
+export default Root;
+
+Note - remember the way this code is written
+-----------------------------------------------------------------------------------------

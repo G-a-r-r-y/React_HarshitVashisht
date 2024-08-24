@@ -1,0 +1,17 @@
+1. Normally - 
+Agar 1 class 2 css file mei designed ho toh joh 
+baad mei import hoti hai uske style follow hote hai 
+
+2. Using css modules - 
+Things to remember - 
+a. First change the css file name to FileName.module.css
+b. Write Command - import variableName from "./FileName.module.css" 
+   in the component file name 
+c. How to use - 
+   Write {variableName.ClassName} as class for the component 
+   Note - we use {} cause module converts the whole css file into a Js object
+          and js ko jsx mei use karne ke liye {} likhna padhta hai 
+   Note - for classes like bg-dark, instead of {variableName.bg-dark} use {variableName["bg-dark"]}
+
+Note - for adding multiple classes use string literals 
+Ex - <div className={`${style.className} ${style["bg-dark"]}`}></div>

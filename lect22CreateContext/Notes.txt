@@ -1,0 +1,79 @@
+Create Context - 
+We use the concept of create context to avoid prop drilling
+prop drilling  - function ko pehle parent mei pass karo then child mei 
+
+By using create context, we can directly pass it to child.
+
+How to SetUp context?
+Step 1 ---> import createContext from React
+Step 2 ---> create a context outside the component and export it at the same time
+Step 3 ---> wrap application in context.Provider and with the required value(Which can be an object)
+
+
+Ex - 
+import Parent from "./Components/Parent";
+import "./Components/common.css";
+//Step 1
+import { createContext } from "react";
+
+//Step 2
+export const MyAppContext = createContext();
+
+function App() {
+  function myFunc() {
+    console.log("Say Hello");
+  }
+  function myFunc2() {
+    console.log("Say Hello2");
+  }
+
+  return (
+    <>
+    //Step 3
+      <MyAppContext.Provider value={{ myFunc: myFunc, myFunc2: myFunc2 }}>
+        <div className="grandParent">
+          <h1>Grand Parent</h1>
+          <Parent />
+        </div>
+      </MyAppContext.Provider>
+    </>
+  );
+}
+
+export default App;
+
+---------------------------------------------------------------------------------
+
+How to use context?
+Step 1 ---> import useContext from React
+Step 2 ---> import the userDefined context 
+Step 3 ---> Dono ko combine karke function nikaal lo (Can also do destructuring here )
+
+Ex- 
+*Child File -* 
+
+import React from "react";
+import "./common.css";
+//Step1
+import { useContext } from "react";
+//Step2
+import { MyAppContext } from "../App";
+
+function Child() {
+    //Step 3 (Can also do destructuring here )
+  const obj = useContext(MyAppContext);
+  const func1 = obj.myFunc;
+  const func2 = obj.myFunc2;
+  return (
+    <div className="Child">
+      <h1>Child</h1>
+      <br />
+      <button onClick={func1}>Call Function1</button>
+      <button onClick={func2}>Call Function2</button>
+    </div>
+  );
+}
+
+export default Child;
+
+

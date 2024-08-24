@@ -1,0 +1,54 @@
+1. The concept of props is used to pass some arguments 
+   while calling a component.
+
+Ex - //Calling in app file - 
+     <Greetings firstName="Garvit" />  
+
+     //In Greetings component file - 
+     function Greetings(props) {
+     console.log(props);
+     return <div>Greetings {props.firstName}</div>;
+     }
+
+     export default Greetings;
+
+Note - 1. props is an js object toh {} ke ander likha hai which consists key value pair 
+       2. props ke alawa koi aur bhi variable name use kar sakte hai, its just a convention
+
+
+2. We can also call the same components more than once 
+
+Ex - 
+    function App() {
+    return (
+        <>
+        <Greetings firstName="Garvit" />
+        <Greetings firstName="Manral" />
+        </>
+    );
+    }
+
+3. Props Destructuring(Js jaise hi hoti hai)- 
+
+Ex - //Calling in app file - 
+    function App() {
+    return (
+        <>
+        <Greetings firstName="Garvit" lastName="Manral" />
+        <Greetings firstName="Akshat" lastName="Jain" />
+        </>
+    );
+    }
+
+    //In Greetings File - 
+    function Greetings(props) {
+    const { firstName, lastName } = props;
+    console.log(props);
+    return <div>Greetings {`${firstName} ${lastName}`}</div>;
+    }
+
+Note -1. We also used string literals here 
+      2. Destructing concept is read only, we cannot update data through this
+      3. Numbers, lists, objects are passed in {} while calling component 
+      Ex - 
+        <Greetings firstName="Garvit" lastName="Manral" age={21} />

@@ -1,0 +1,53 @@
+
+Note - 
+      {users.map((user) => {
+        return <User user={user} />;
+      })}
+
+return likhna is very important
+
+
+Note - 
+Agar aise destructure karna hai toh  - 
+function User({ Name, age, id }) {
+  console.log(Name, age);
+  return (
+    <>
+      <h1>{Name}</h1>
+      <p>{age}</p>
+    </>
+  );
+}
+
+export default User;
+
+Aise call karna padega - 
+<User {...user} key={user.id} />;
+
+---------------------------------------------------------------------------------------------
+Note - 
+jaha useState use hota hai, wahi uska setFunction likha hota hai,
+if we want to use that function somewhere else, we can just pass it as prop
+
+const [users, setUsers] = useState([
+    { id: 1, Name: "Garvit", age: 21 },
+    { id: 2, Name: "Abhinav", age: 32 },
+    { id: 3, Name: "Ananya", age: 11 },
+    { id: 4, Name: "Ramu", age: 244 },
+  ]);
+
+  function increaseAge(id) {
+    setUsers((prevState) => {
+      return prevState.map((user) => {
+        if (user.id === id) {
+          return { ...user, age: user.age + 1 };
+        } else {
+          return user;
+        }
+      });
+    });
+  }
+
+  ---------------------------------------------------------------------------------------------
+
+Note - revise arrow functions like map, filter, reduce, find

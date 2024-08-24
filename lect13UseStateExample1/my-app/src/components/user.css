@@ -1,0 +1,8 @@
+.user {
+  border: 1px solid black;
+  margin: 5px;
+  padding: 2px;
+  color: white;
+  background-color: #292929;
+  text-align: center;
+}

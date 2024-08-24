@@ -1,0 +1,196 @@
+useEffect is one of the most important hooks in react and is a way to 
+handle life cycle of the component in which it is present. 
+useEffect runs on every render of the component (i.e when a state variable changes) 
+and can also run every time a specific value changes that is mentioned in it's dependency array.
+
+Things we can do with useEffect -
+1. Fetch data from api 
+2. evenListeners 
+3. any kind of side effect 
+
+Note  - 
+UseEffect - 
+1. Arguments - 
+   a. first Argument: callback function 
+   b. Second Argument: dependency array 
+
+2. dependency array - 
+   a. Agar dependency array di hi nhi toh har render ke saath useEffect call hoga 
+   b. [] -----> useEffect will be called only once (Empty dependency array passed)
+   c. dependency array with some value ----> jab sirf woh value change/re-render hogi tabhi useEffect chalega
+
+Ex- 
+
+import React from "react";
+import { useEffect, useState } from "react";
+
+function ExampleUseEffect() {
+  console.log("Component renderd");
+  const [counter1, setCounter1] = useState(0);
+  const [counter2, setCounter2] = useState(0);
+
+  //   a.
+  //     useEffect(() => {
+  //       console.log("Inside UseEffect");
+  //     });
+
+  //   b.
+  //     useEffect(() => {
+  //       console.log("Inside UseEffect");
+  //     }, []);
+
+  //   c.
+  useEffect(() => {
+    console.log("Inside UseEffect");
+  }, [counter1]);
+
+  return (
+    <>
+      <div>
+        <h1>Counter1 - {counter1}</h1>
+        <button
+          onClick={() => {
+            setCounter1(counter1 + 1);
+          }}
+        >
+          Increase
+        </button>
+      </div>
+
+      <div>
+        <h1>Counter2 - {counter2}</h1>
+        <button
+          onClick={() => {
+            setCounter2(counter2 + 1);
+          }}
+        >
+          Increase
+        </button>
+      </div>
+    </>
+  );
+}
+
+export default ExampleUseEffect;
+
+-----------------------------------------------------------------------------------------------
+
+Fetching Data using UseEffect 
+
+There are 2 ways to do this - 
+1. via promises
+2. async await
+
+Ex - via promises - 
+function FetchData() {
+  const url = "https://jsonplaceholder.typicode.com/posts";
+  useEffect(() => {
+    fetch(url)
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+  }, []);
+
+  return <></>;
+}
+
+export default FetchData;
+
+Ex - async await - 
+ async function fetchData() {
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+Note - dono method mei empty dependency list pass huyi hai
+
+----------------------------------------------------------------------------------------
+
+Fetching with loading.... screen and Error Handling - 
+
+Ex - 
+import { useState, useEffect } from "react";
+import User from "./User";
+const url = "https://jsonplaceholder.typicode.com/users";
+
+function FetchData2() {
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const fetchData = async () => {
+    const response = await fetch(url);
+    if (!(response.status >= 200 && response.status <= 299)) {
+      setError = true;
+      setErrorMsg(`${response.status} Error`);
+      setIsLoading(false);
+      return;
+    }
+    const data = await response.json();
+    setUsers(data);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (isLoading) {
+    return <h1>Loading.....</h1>;
+  }
+  if (error) {
+    return <h1>{errorMsg}</h1>;
+  }
+
+  return (
+    <div>
+      {users.map((user) => {
+        return <User key={user.id} {...user} />;
+      })}
+    </div>
+  );
+}
+
+export default FetchData2;
+
+Note - While fetching the data in json format, agar koi object hai toh hum seedhe object
+       print nhi karwa sakte, we have to use its key value pair 
+
+Ex - 
+
+function User({ id, name, username, email, phone, address, company, website }) {
+  return (
+    <div
+      style={{
+        padding: "1rem",
+        margin: "1rem",
+        backgroundColor: "#292929",
+        color: "#efefef",
+      }}
+    >
+      <h4>id: {id}</h4>
+      <h4>name: {name}</h4>
+      <h4>username: {username}</h4>
+      <h4>email: {email}</h4>
+      <h4>phone: {phone}</h4>
+      <h4>city: {address.city}</h4>
+      <h4>company: {company.name}</h4>
+    </div>
+  );
+}
+
+Here we cannot print seedhe address, we have to print it bit by bit 
+
+-------------------------------------------------------------------------------------------------------
+
+
+

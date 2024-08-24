@@ -1,0 +1,87 @@
+1. index.js
+
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+
+function Hello(){
+  return <h1>Hello World</h1>
+  <p>loremsdfsdsdf</p>
+}
+
+Note - we cannot return multiple elements like this
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <Hello/>
+);
+
+(A)
+One way(Write everything inside a div and then return that div) - 
+
+function Hello(){
+  return 
+  <div>
+  <h1>Hello World</h1>
+  <p>loremsdfsdsdf</p>
+  </div>
+}
+Problem - An extra layer of div gets created inside the body tag  
+
+
+(B)
+More efficient way (Use React.Fragment) - 
+
+function Hello(){
+  return( 
+  <React.Fragment>
+  <h1>Hello World</h1>
+  <p>lorem23 sdfsdf sd</p>
+  </React.Fragment>
+  );
+}
+
+Note - don't forget the () with return 
+
+Shortcut to write React.Fragment- 
+function Hello(){
+  return( 
+  <>
+  <h1>Hello World</h1>
+  <p>lorem23 sdfsdf sd</p>
+  </>
+  );
+}
+
+----------------------------------------------------------------------------------
+
+2. We make different files for different components.
+Note - 1. Naming convention --> joh name component ka hai wahi file ka bhi hoga
+       2. File can have .jsx ya .js extension
+
+3. rfce - shortcut for default code snippet
+
+4. in newer versions of react, we don't need to import React from "react"; in components file 
+
+5. Hum index.js mei bas App component ko call karte hai baaki saare components App file mei call hote hai
+
+6. Use react dev tools extension to know the structure of your react app components 
+
+7. Store all components other than App.jsx inside components folder 
+
+---------------------------------------------------------------------------------------
+JSX Rules 
+
+1. class ki jagah className use hota hai 
+Note - agar bas ek specific component mei css apply karni hai toh ussi component file mei woh css import karo
+
+2. agar js jsx mei use karni hai toh use {js}
+
+3.
+<form action="">
+        <label htmlFor="">FirstName</label>
+        <input type="text" id="fname" />
+</form>
+
+Note - label mei for nhi htmlFor hota hai 
+
+-------------------------------------------------------------------------------

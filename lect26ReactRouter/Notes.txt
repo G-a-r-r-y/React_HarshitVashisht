@@ -1,0 +1,1109 @@
+React Router DOM  - 
+
+React Router DOM is an npm package that enables you to implement dynamic 
+routing in a web app. It allows you to display pages and allow users to 
+navigate them. It is a fully-featured client and server-side routing 
+library for React.
+
+How to implement it - 
+
+Step 1 - npm install react-router-dom 
+
+Step 2 - import 4 things --->
+
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+
+Step 3 - create router --->
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route path="/" element={<h1>Home Page </h1>} />
+      <Route path="/about" element={<h1>About Page</h1>} />
+      <Route path="/contacts" element={<h1>Contact Pages</h1>} />
+      <Route path="*" element={<h1>Error Page</h1>} />
+    </Route>
+  )
+);
+
+Step 4 - main funtion mei routerProvider and router use karo --->
+
+function App() {
+  return (
+    <div>
+      <RouterProvider router={router} />
+    </div>
+  );
+}
+
+---------------------------------------------------------------------------
+Code - 
+
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route path="/" element={<h1>Home Page </h1>} />
+      <Route path="/about" element={<h1>About Page</h1>} />
+      <Route path="/contacts" element={<h1>Contact Pages</h1>} />
+      <Route path="*" element={<h1>Error Page</h1>} />
+    </Route>
+  )
+);
+
+function App() {
+  return (
+    <div>
+      <RouterProvider router={router} />
+    </div>
+  );
+}
+
+export default App;
+
+Note - 1. Ab for http://localhost:5173/contacts, contact pages will get rendered
+       2. Remember the element attribute passed
+       4. * path is reserved for errors
+
+-------------------------------------------------------------------------------------------
+
+Note - 
+Now what we do is we make pages in a pages folder and write all their addresses in
+index.js and then we import them to App.jsx
+
+Ex - 
+import { Home, About, Contact, Error } from "./pages";
+
+Bas "./pages" padha
+-------------------------------------------------------------------------------------------
+
+--> Importing a specific component on every page like a navbar
+
+Step 1 - Make a layout Folder for such files
+Step 2 - Make the navFile in layouts 
+Step 3 - import this navFile in App.jsx 
+Step 4 - For using this, use path="/" in the parent div 
+         and Home route ko index attribute se replace kardo in App.js 
+
+Ex - 
+
+import RootLayout from "./layouts/RootLayout";
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<RootLayout />}>
+      <Route index element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contacts" element={<Contact />} />
+      <Route path="*" element={<Error />} />
+    </Route>
+  )
+);
+
+Step 5 - use {Outlet} in the navFile 
+
+Ex - 
+
+import React from "react";
+import { Outlet } from "react-router-dom";
+
+function RootLayout() {
+  return (
+    <div>
+      <h1>Nav</h1>
+      <nav>
+        <ul>
+          <li>Home</li>
+          <li>About</li>
+          <li>Contact</li>
+        </ul>
+      </nav>
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+export default RootLayout;
+
+---------------------------------------------------------------------------------
+
+--> Redirecting to different pages using navbar - 
+
+Note - import and use Link property 
+
+Ex - 
+import React from "react";
+import { Outlet, Link } from "react-router-dom";
+
+function RootLayout() {
+  return (
+    <div>
+      <h1>Nav</h1>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="about">About</Link>
+          </li>
+          <li>
+            <Link to="contact">contact</Link>
+          </li>
+        </ul>
+      </nav>
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+export default RootLayout;
+-------------------------------------------------------------------------
+
+--> Active class concept - 
+If we use NavLink instead of Link, an active class is automatically added to the 
+component which is currently renderd. 
+
+Ex - 
+
+import React from "react";
+import { Outlet, Link, NavLink } from "react-router-dom";
+
+function RootLayout() {
+  return (
+    <div>
+      <h1>Nav</h1>
+      <nav>
+        <ul>
+          <li>
+            <NavLink to="/">Home</NavLink>
+          </li>
+          <li>
+            <NavLink to="about">About</NavLink>
+          </li>
+          <li>
+            <NavLink to="contact">contact</NavLink>
+          </li>
+        </ul>
+      </nav>
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+export default RootLayout;
+
+Note - we can override this active class with our own user-defined class 
+
+Ex - 
+
+import React from "react";
+import { Outlet, Link, NavLink } from "react-router-dom";
+
+function RootLayout() {
+  return (
+    <div>
+      <h1>Nav</h1>
+      <nav>
+        <ul>
+          <li>
+            <NavLink
+              to="/"
+              className={(obj) => {
+                return obj.isActive ? "newActiveClass" : null;
+              }}
+            >
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="about"
+              className={(obj) => {
+                return obj.isActive ? "newActiveClass" : null;
+              }}
+            >
+              About
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="contact"
+              className={(obj) => {
+                return obj.isActive ? "newActiveClass" : null;
+              }}
+            >
+              contact
+            </NavLink>
+          </li>
+        </ul>
+      </nav>
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+export default RootLayout;
+
+
+Note - 
+
+  <NavLink
+    to="/"
+    className={(obj) => {
+      return obj.isActive ? "newActiveClass" : null;
+    }}
+  >
+    Home
+  </NavLink>
+
+can also be written with object destructuring as 
+
+  <NavLink
+    to="/"
+    className={{isActive} => {
+      return isActive ? "newActiveClass" : null;
+    }}
+  >
+    Home
+  </NavLink>
+
+Note - we can also include css using css modules concept.
+
+----------------------------------------------------------------------------------------
+
+Note - Very important !!!
+
+import Post from "../components/Post";
+
+              NOT 
+
+import "../components/Post";
+
+------------------------------------------------------------------------------------------
+
+Note - Relative path method 
+function Post({ id, title }) {
+  return (
+    <div style={{ padding: "1rem", margin: "1rem", border: "1px solid black" }}>
+      <Link to={id.toString()}>
+        <h2>{title}</h2>
+      </Link>
+      <p>id:{id}</p>
+    </div>
+  );
+}
+
+toString karna padhta hai cause id as a number link mei attach nhi kar sakte.
+
+In app.jsx - 
+<Route path="/posts/:id" element={<PostDetial />} />
+
+Note - We need to include ":" before id 
+-------------------------------------------------------------------------------------------
+
+--> useParams() - 
+Note - this helps us in getting id and then changing the url to 
+       fetch desired data.
+
+Code - 
+
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
+const url = "https://jsonplaceholder.typicode.com/posts";
+
+function PostDetail() {
+  const { id } = useParams();
+  const [data, setData] = useState(null);
+  async function fetchData(url) {
+    const response = await fetch(`${url}/${id}`);
+    const data = await response.json();
+    setData(data);
+  }
+
+  useEffect(() => {
+    fetchData(url);
+  }, []);
+  console.log(data);
+
+  return (
+    <>
+      {data && (
+        <>
+          <h2>Title :{data.title}</h2>
+          <h1>id: {id}</h1>
+        </>
+      )}
+    </>
+  );
+}
+
+export default PostDetail;
+
+--------------------------------------------------------------------------------------------
+Creating User Authentication -  
+
+Step 1 - Create an outer Auth file while passing posts as children 
+Ex - 
+      <Route
+        path="/posts"
+        element={
+          <RequireAuth>
+            <Posts />
+          </RequireAuth>
+        }
+      />
+
+Step 2 - Outer Auth File  
+
+Ex - 
+import { Navigate } from "react-router-dom";
+
+function RequireAuth({ children }) {
+  const loggedIn = false;
+  if (loggedIn) {
+    return children;
+  }
+  return <Navigate to={"/Log"} />;
+}
+
+export default RequireAuth;
+
+Note - We used Navigate to redirect 
+
+Step 3 - create a Login File (we named it Log here ) 
+
+Ex - 
+import React from "react";
+
+function Log() {
+  return <div>Log</div>;
+}
+
+export default Log;
+
+Step 4 - add login route to routes - 
+
+Ex - 
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<RootLayout />}>
+      <Route index element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route
+        path="/posts"
+        element={
+          <RequireAuth>
+            <Posts />
+          </RequireAuth>
+        }
+      />
+      <Route path="/posts/:id" element={<PostDetail />} />
+      <Route path="/Log" element={<Log />} />
+      <Route path="*" element={<Error />} />
+    </Route>
+  )
+);
+
+-----------------------------------------------------------------------------------------------
+Now we need a login variable which shall be avaible everywhere for login and logOff purposes.
+
+For that, we will use the concept of create and use context.
+
+Step 1- Create the AuthProvider context File -
+
+Ex  - Inside AuthProvider File  - 
+
+import { createContext, useContext, useState } from "react";
+
+const AuthContext = createContext();
+
+function AuthProvider({ children }) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  return (
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
+export default AuthProvider;
+
+Note - Remember to render children 
+
+Step 2 - Wrap the function app with the context - 
+
+Ex - Inside App.js - 
+
+function App() {
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  );
+}
+
+Step 3 - Make changes in RequireAuth File - 
+
+Ex - 
+
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthProvider";
+
+function RequireAuth({ children }) {
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  if (isLoggedIn) {
+    return children;
+  }
+  return <Navigate to={"/Log"} />;
+}
+
+export default RequireAuth;
+
+------------------------------------------------------------------------------
+
+Now we will create a LogIn option agar logged in nhi hai toh 
+
+Ex - In NavBar - 
+
+import React from "react";
+import { Outlet, Link, NavLink } from "react-router-dom";
+import { useAuth } from "../contexts/AuthProvider";
+
+function RootLayout() {
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  return (
+    <div>
+      <h1>Nav</h1>
+      <nav>
+        <ul>
+          <li>
+            <NavLink
+              to="/"
+              className={(obj) => {
+                return obj.isActive ? "newActiveClass" : null;
+              }}
+            >
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="about"
+              className={(obj) => {
+                return obj.isActive ? "newActiveClass" : null;
+              }}
+            >
+              About
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="contact"
+              className={(obj) => {
+                return obj.isActive ? "newActiveClass" : null;
+              }}
+            >
+              contact
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="posts"
+              className={(obj) => {
+                return obj.isActive ? "newActiveClass" : null;
+              }}
+            >
+              posts
+            </NavLink>
+          </li>
+          {!isLoggedIn && (
+            <li>
+              <NavLink
+                to="Log"
+                className={(obj) => {
+                  return obj.isActive ? "newActiveClass" : null;
+                }}
+              >
+                Login
+              </NavLink>
+            </li>
+          )}
+        </ul>
+        {isLoggedIn && (
+          <button
+            onClick={() => {
+              setIsLoggedIn(false);
+            }}
+          >
+            Log Out
+          </button>
+        )}
+      </nav>
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+export default RootLayout;
+
+
+Note - If not logged in toh login Dikhana hai bas and if logged In toh log out ka option dikhao 
+
+Ex - In logIn File - 
+
+import React from "react";
+import { useAuth } from "../contexts/AuthProvider";
+import { useNavigate } from "react-router-dom";
+
+function Log() {
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  const navigate = useNavigate();
+  function login() {
+    setIsLoggedIn(true);
+    navigate("/", { replace: true });
+  }
+  return (
+    <div>
+      <h1>LogIn</h1>
+      <button onClick={login}>Log In</button>
+    </div>
+  );
+}
+
+export default Log;
+
+Note - We used useNavigate here for redirecting and we used replace here to 
+       make sure ki back karne ke option mei user dobara login pe naha pahuch jaaye.
+  
+Note - REPLACE ka concept is very important
+
+----------------------------------------------------------------------------------------------------
+
+useLocaiton  - Gives the current location 
+
+Now to resolve the issue ki agar posts se login par aaye the toh login ke baad posts 
+par hi direct jaaye naaki home par 
+
+Ex - In RequireAuth File - 
+
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthProvider";
+import { useLocation } from "react-router-dom";
+
+function RequireAuth({ children }) {
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  const location = useLocation();
+  if (isLoggedIn) {
+    return children;
+  }
+  return (
+    <Navigate to={"/Log"} replace state={{ previousPath: location.pathname }} />
+  );
+}
+
+export default RequireAuth;
+
+Ex - In Log.jsx 
+
+import React from "react";
+import { useAuth } from "../contexts/AuthProvider";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
+function Log() {
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const previousPath = location.state?.previousPath || "/";
+  function login() {
+    setIsLoggedIn(true);
+    navigate(previousPath, { replace: true });
+  }
+  return (
+    <div>
+      <h1>LogIn</h1>
+      <button onClick={login}>Log In</button>
+    </div>
+  );
+}
+
+export default Log;
+
+Note - state is a property of useLocation 
+
+----------------------------------------------------------------------------------
+
+Loaders functions - 
+
+We use loaders functions for fetching the data first then mounting the component. 
+
+Step 1 - provide loaders function to route 
+Step 2 - useLoaderData and get data 
+
+Ex - in PostDetails.jsx - 
+
+import { useParams } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
+
+export async function loader({ params }) {
+  const url = "https://jsonplaceholder.typicode.com/posts";
+  const response = await fetch(`${url}/${params.id}`);
+  const data = await response.json();
+  return data;
+}
+
+function PostDetail() {
+  const data = useLoaderData();
+  return (
+    <>
+      {data && (
+        <>
+          <h2>Title :{data.title}</h2>
+          <h1>id: {data.id}</h1>
+        </>
+      )}
+    </>
+  );
+}
+
+export default PostDetail;
+
+Note - 1. We didn't use useState and useEffect here 
+       2. We imported useLoaderData 
+       3. We export the loader function joh hum app.js mei call karenge 
+       4. loader returns a group of properties jisme params bhi hai toh 
+          hum usse deconstruct kar rhe hai 
+
+
+Ex - in App.js - 
+
+import "./index.css";
+
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+
+import { Home, About, Contact, Error, Posts, PostDetail, Log } from "./pages";
+import RootLayout from "./layouts/RootLayout";
+import Post from "./components/Post";
+import RequireAuth from "./components/RequireAuth";
+import AuthProvider from "./contexts/AuthProvider";
+import { loader as fetchData } from "./pages/Posts";
+import { loader as fetchDataSingle } from "./pages/PostDetail";
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<RootLayout />}>
+      <Route index element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route
+        path="/posts"
+        loader={fetchData}
+        element={
+          <RequireAuth>
+            <Posts />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/posts/:id"
+        loader={fetchDataSingle}
+        element={<PostDetail />}
+      />
+      <Route path="/Log" element={<Log />} />
+      <Route path="*" element={<Error />} />
+    </Route>
+  )
+);
+
+function App() {
+  return (
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
+  );
+}
+
+export default App;
+
+Note - We imported the exported functions as uniqueNames.
+
+PROBLEM - 
+Ismei dikkat yeh hai ki jab hum logout the, even if we clicked on posts 
+and got redireted to login but since ismei fetching component ke mount hone 
+se pehle hoti hai toh network tab mei data dikh jaata hai.
+
+------------------------------------------------------------------------------------------------
+To Resolve the above stated problem, we can just make it so ki fetch command 
+tabhi chalao when the user is logged in. 
+
+But iske liye humme pehle poore app ko logged in context mei daalna hoga 
+
+But ek aur problem kadhi hoti hai, ki useAuth toh sirf main function ke ander call 
+hota hai but loader function toh main function ke bahar banate hai
+
+Soln - For this, we pass the value of loggedIn with the loader function calling in route only.
+
+Ex - 
+
+// in main.jsx - 
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
+import AuthProvider from "./contexts/AuthProvider.jsx";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  </React.StrictMode>
+);
+
+// in App.jsx -  
+
+import "./index.css";
+
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+
+import { Home, About, Contact, Error, Posts, PostDetail, Log } from "./pages";
+import RootLayout from "./layouts/RootLayout";
+import Post from "./components/Post";
+import RequireAuth from "./components/RequireAuth";
+import AuthProvider, { useAuth } from "./contexts/AuthProvider";
+import { loader as fetchData } from "./pages/Posts";
+import { loader as fetchDataSingle } from "./pages/PostDetail";
+
+function App() {
+  const { isLoggedIn } = useAuth();
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<RootLayout />}>
+        <Route index element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route
+          path="/posts"
+          loader={(args) => {
+            return fetchData(args, { isLoggedIn: isLoggedIn });
+          }}
+          element={<Posts />}
+        />
+        <Route
+          path="/posts/:id"
+          loader={(args) => {
+            return fetchDataSingle(args, { isLoggedIn: isLoggedIn });
+          }}
+          element={<PostDetail />}
+        />
+        <Route path="/Log" element={<Log />} />
+        <Route path="*" element={<Error />} />
+      </Route>
+    )
+  );
+  return <RouterProvider router={router} />;
+}
+
+export default App;
+
+
+Note - 1. sab kuch ab main function ke ander hi kar diya 
+       2. How we used callback function with loader 
+       3. return and mei se auth provider hata diya hai cause poore
+          app pe already laga huya hai woh 
+       4. in between saare auths hata diye hai 
+
+
+//in PostDetail -
+
+import { redirect } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
+
+export async function loader({ params }, { isLoggedIn }) {
+  console.log(params, isLoggedIn);
+  if (!isLoggedIn) {
+    return redirect("/Log");
+  }
+
+  const url = "https://jsonplaceholder.typicode.com/posts";
+  const response = await fetch(`${url}/${params.id}`);
+  const data = await response.json();
+  return data;
+}
+
+function PostDetail() {
+  const data = useLoaderData();
+  return (
+    <>
+      {data && (
+        <>
+          <h2>Title :{data.title}</h2>
+          <h1>id: {data.id}</h1>
+        </>
+      )}
+    </>
+  );
+}
+
+export default PostDetail;
+
+Note - redirect is not a hook
+
+//in Posts.jsx - 
+
+import Post from "../components/Post";
+import { useLoaderData } from "react-router-dom";
+import { redirect } from "react-router-dom";
+
+const endpoint = "https://jsonplaceholder.typicode.com/posts";
+
+export async function loader(args,{ isLoggedIn }) {
+  if (!isLoggedIn) {
+    return redirect("/Log");
+  }
+
+  const response = await fetch(endpoint);
+  const data = await response.json();
+  return data;
+}
+
+export default function Posts() {
+  const posts = useLoaderData();
+
+  return (
+    <>
+      {posts &&
+        posts.map((post) => {
+          return <Post key={post.id} id={post.id} title={post.title} />;
+        })}
+    </>
+  );
+}
+
+------------------------------------------------------------------------------
+Next Problem - Ab agar hum posts se seedhe login pe gaye hai toh 
+              login ke baad posts page par jaana hai automatically
+
+Soln - Query/Search parameter pass karo from the Posts page to 
+       the log page and then waha se usse previous page par redirect 
+       karo.
+
+Ex - 
+//in Post.jsx - 
+
+import Post from "../components/Post";
+import { useLoaderData } from "react-router-dom";
+import { redirect } from "react-router-dom";
+
+export async function loader(args, { isLoggedIn }) {
+  const url = new URL(args.url);
+  const pathname = url.pathname;
+  const endpoint = "https://jsonplaceholder.typicode.com/posts";
+  console.log(isLoggedIn);
+  if (!isLoggedIn) {
+    return redirect(`/Log?redirectedTo=${pathname}`);
+  }
+
+  const response = await fetch(endpoint);
+  const data = await response.json();
+  return data;
+}
+
+export default function Posts() {
+  const posts = useLoaderData();
+
+  return (
+    <>
+      {posts &&
+        posts.map((post) => {
+          return <Post key={post.id} id={post.id} title={post.title} />;
+        })}
+    </>
+  );
+}
+
+Note - pathname bhi loader ke args mei hota hai 
+
+
+//in Log.jsx - 
+
+import React from "react";
+import { useAuth } from "../contexts/AuthProvider";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+
+function Log() {
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  const [searchParams] = useSearchParams();
+
+  const previousPath = searchParams.get("redirectedTo") || "/";
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate(previousPath, { replace: true });
+    }
+  }, [isLoggedIn]);
+  function login() {
+    setIsLoggedIn(true);
+  }
+
+  return (
+    <div>
+      <h1>LogIn</h1>
+      <button onClick={login}>Log In</button>
+    </div>
+  );
+}
+
+export default Log;
+
+---------------------------------------------------------------------------------------------------------
+
+Ab Last mei we need loading page inbetween loading phases - 
+
+Note - 1. For this we use useNavigation 
+       2. Jab tak state loading se bahar na aaye, main content
+          ko render matt karo 
+
+Ex - 
+
+// in RootLayout.jsx(NavBar) - 
+
+import React from "react";
+import { Outlet, Link, NavLink } from "react-router-dom";
+import { useAuth } from "../contexts/AuthProvider";
+import { useNavigation } from "react-router-dom";
+
+function RootLayout() {
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
+  const navigation = useNavigation();
+  return (
+    <div>
+      <h1>Nav</h1>
+      <nav>
+        <ul>
+          <li>
+            <NavLink
+              to="/"
+              className={(obj) => {
+                return obj.isActive ? "newActiveClass" : null;
+              }}
+            >
+              Home
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="about"
+              className={(obj) => {
+                return obj.isActive ? "newActiveClass" : null;
+              }}
+            >
+              About
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="contact"
+              className={(obj) => {
+                return obj.isActive ? "newActiveClass" : null;
+              }}
+            >
+              contact
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="posts"
+              className={(obj) => {
+                return obj.isActive ? "newActiveClass" : null;
+              }}
+            >
+              posts
+            </NavLink>
+          </li>
+          {!isLoggedIn && (
+            <li>
+              <NavLink
+                to="Log"
+                className={(obj) => {
+                  return obj.isActive ? "newActiveClass" : null;
+                }}
+              >
+                Login
+              </NavLink>
+            </li>
+          )}
+        </ul>
+        {isLoggedIn && (
+          <button
+            onClick={() => {
+              setIsLoggedIn(false);
+            }}
+          >
+            Log Out
+          </button>
+        )}
+      </nav>
+      <main>
+        {navigation.state === "loading" ? <h1>Loading...</h1> : <Outlet />}
+      </main>
+    </div>
+  );
+}
+
+export default RootLayout;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

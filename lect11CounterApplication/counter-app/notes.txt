@@ -1,0 +1,18 @@
+We can also use callbacks inside stateFunction - 
+Ex - 
+
+const [count, setCount] = useState(0);
+  function handleIncrease() {
+    //setCount(count + 1);
+
+    //Another way of writing with callback -
+    // setCount((currentVal) => {
+    //   return currentVal + 1;
+    // });
+
+    //Or
+    setCount((currentVal) => currentVal + 1);
+  }
+
+
+Note - stateFunction has the value of the current data 

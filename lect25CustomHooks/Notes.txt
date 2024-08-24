@@ -1,0 +1,196 @@
+Custom Hooks - 
+We can create our own hooks like useState, useEffect etc.
+Note - 1. Hooks are just like libraries from which we can call certain
+          predefined functions. 
+       2. Naming convetion of hooks - useHOOKNAME.js
+
+----------------------------------------------------------------------------------------
+1. useFetch Hook - 
+
+Ex - //useFetch.js File  - 
+    import { useState, useEffect } from "react";
+
+    function useFetch(url) {
+    const [data, setData] = useState(null);
+    const [loading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    useEffect(() => {
+        async function fetchData(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+            throw Error("Something went wrong");
+            }
+            const newData = await response.json();
+            setData(newData);
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setIsLoading(false);
+        }
+        }
+
+        fetchData(url);
+    }, [url]);
+
+    return { data, loading, error };
+    }
+
+    export default useFetch;
+
+Note - 1. ismei we have also implemented loading and error handling 
+       2. For loadind, its simple logic ki jab tak data fetch na hojaaye
+          keep loading=true and bas loading print karwao and jaise hi data 
+          fetch ho jaaye, loading=false kardo taaaki data print ho jaaye. 
+          Since loading is set using useState toh loading=false karte waqt 
+          poora component ek baar re-render ho jaayega.
+       3. For error handling, we used try catch and finally block
+          Agar response ok nhi hai toh hum ek error throw karte hai 
+          joh catch block mei jaata hai jaha hum error msg define karte hai.
+       4. Finaaly block hamesha chalta hai end mei toh usmei logically loading=false.
+       5. return hum ek object format mei kar rhe hai 
+          Ex - return { data, loading, error };
+               it is equal to return { data:data, loading:loading, error:error };
+               Jab key and value ek hi varible se likhte hai toh dono likhne ki 
+               zarurat nhi hoti.
+       6. useEffect ki dependency array mei url hai 
+
+Ex - // Main calling File - 
+
+import User from "./Components/User";
+import useFetch from "./hooks/useFetch";
+
+function FetchApp() {
+  const { data, loading, error } = useFetch(
+    "https://jsonplaceholder.typicode.com/users"
+  );
+
+  if (loading === true) {
+    return <div>Loading......</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  return (
+    <>
+      {data &&
+        data.map((user) => {
+          return <User {...user} key={user.id} />;
+        })}
+    </>
+  );
+}
+
+export default FetchApp;
+
+Note - data && wala syntax before printing user 
+
+--------------------------------------------------------------------------------------
+
+Note - When we use React.StrictMode, the fetch is called 2 times
+       To avoid this, we can add abort controller.
+       One request would get cancelled.
+
+How to implement - 
+1. Create controller 
+2. write additional argument in fetch();
+3. write cleanUp function 
+
+Ex - 
+import { useState, useEffect } from "react";
+
+function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    async function fetchData(url) {
+      try {
+        const response = await fetch(url, { signal: controller.signal });
+        if (!response.ok) {
+          throw Error("Something went wrong");
+        }
+        const newData = await response.json();
+        setData(newData);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData(url);
+    return () => {
+      controller.abort();
+    };
+  }, [url]);
+
+  return { data, loading, error };
+}
+
+export default useFetch;
+
+-----------------------------------------------------------------------------
+
+2. useLocalStorage - 
+
+Ex - // useLocalStorage File - 
+
+import { useState, useEffect } from "react";
+
+function useLocalStorage(key, initialValue) {
+  const [state, setState] = useState(() => {
+    return JSON.parse(localStorage.getItem(key)) || initialValue;
+  });
+  useEffect(() => {
+    localStorage.setItem(key, JSON.stringify(state));
+  }, [state]);
+  return [state, setState];
+}
+
+export default useLocalStorage;
+
+// Using useLocalStorage File - 
+ 
+import useLocalStorage from "./hooks/useLocalStorage";
+
+function LocalStorageApp() {
+  const [firstName, setFirstName] = useLocalStorage("firstName", "");
+  const [lastName, setLastName] = useLocalStorage("lastName", "");
+  return (
+    <form>
+      <label htmlFor="firstName">FirstName: </label>
+      <input
+        type="text"
+        name="firstName"
+        id="firstName"
+        value={firstName}
+        onChange={(e) => {
+          setFirstName(e.target.value);
+        }}
+      />
+      <h1>FirstName: {firstName}</h1>
+
+      <label htmlFor="lastName">LastName: </label>
+      <input
+        type="text"
+        name="lastName"
+        id="lastName"
+        value={lastName}
+        onChange={(e) => {
+          setLastName(e.target.value);
+        }}
+      />
+      <h1>LastName: {lastName}</h1>
+    </form>
+  );
+}
+
+export default LocalStorageApp;
+
+----------------------------------------------------------------------------------
+
+

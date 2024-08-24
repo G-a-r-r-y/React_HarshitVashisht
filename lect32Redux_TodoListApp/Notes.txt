@@ -1,0 +1,145 @@
+// In AddTodoForm - 
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const newTodo = {
+      id: nanoid(),
+      title: title,
+      completed: false,
+    };
+    dispatch(addTodo(newTodo));
+  }
+
+Note - newTodo as a payload pass ho rha hai 
+
+// In todosSlice - 
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = [
+  { id: "123d", title: "Play FootBall", completed: true },
+  { id: "1xag", title: "Play Games", completed: false },
+  { id: "23fh", title: "Learn Music", completed: false },
+  { id: "155a", title: "Play Golf", completed: true },
+];
+
+const todoSlice = createSlice({
+  name: "todos",
+  initialState: initialState,
+  reducers: {
+    addTodo: (state, action) => {
+      state.push(action.payload);
+    },
+    removeTodo: (state, action) => {
+      return state.filter((todo) => todo.id !== action.payload.id);
+    },
+    toggleCompleted: (state, action) => {
+      state.forEach((todo) => {
+        if (todo.id === action.payload.id) {
+          todo.completed = !todo.completed;
+        }
+      });
+    },
+  },
+});
+
+export const { addTodo, removeTodo, toggleCompleted } = todoSlice.actions;
+export default todoSlice.reducer;
+
+Note - kaise payload use kiya hai 
+
+------------------------------------------------------------------------------
+Prepare concept  - 
+Yeh reducer se pehle chalta hai 
+
+Ex - // in todoSlice - 
+
+import { createSlice, nanoid } from "@reduxjs/toolkit";
+
+const initialState = [
+  { id: "123d", title: "Play FootBall", completed: true },
+  { id: "1xag", title: "Play Games", completed: false },
+  { id: "23fh", title: "Learn Music", completed: false },
+  { id: "155a", title: "Play Golf", completed: true },
+];
+
+const todoSlice = createSlice({
+  name: "todos",
+  initialState: initialState,
+  reducers: {
+    // addTodo: (state, action) => {
+    //   state.push(action.payload);
+    // },
+
+    addTodo: {
+      reducer: (state, action) => {
+        state.push(action.payload);
+      },
+      prepare: (title) => {
+        return {
+          payload: {
+            id: nanoid(),
+            title: title,
+            completed: false,
+          },
+        };
+      },
+    },
+
+    removeTodo: (state, action) => {
+      return state.filter((todo) => todo.id !== action.payload.id);
+    },
+    toggleCompleted: (state, action) => {
+      state.forEach((todo) => {
+        if (todo.id === action.payload.id) {
+          todo.completed = !todo.completed;
+        }
+      });
+    },
+  },
+});
+
+export const { addTodo, removeTodo, toggleCompleted } = todoSlice.actions;
+export default todoSlice.reducer;
+
+
+// in AddTodoForm.jsx - 
+
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addTodo } from "./todosSlice";
+
+function AddTodoForm() {
+  const dispatch = useDispatch();
+  const [title, setTitle] = useState("");
+  function handleSubmit(e) {
+    e.preventDefault();
+    // const newTodo = {
+    //   id: nanoid(),
+    //   title: title,
+    //   completed: false,
+    // };
+    // dispatch(addTodo(newTodo));
+
+    dispatch(addTodo(title));
+    setTitle("");
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        value={title}
+        onChange={(e) => {
+          setTitle(e.target.value);
+        }}
+      />
+      <button type="submit">Add</button>
+    </form>
+  );
+}
+
+export default AddTodoForm;
+
+-------------------------------------------------------------------------------

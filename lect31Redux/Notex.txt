@@ -1,0 +1,211 @@
+Redux - 
+Redux is a JS library for predictable and maintainable global state management.
+
+Basic Process of Redux - 
+
+1. Store - 
+It contains the state of the entire app.
+We create a single store to store the state of the entire app.
+
+2. To update state inside store - 
+We call the "dispatch" function and provide the action to the "dispatch"
+function, indicating how we want to update the state.
+
+3. Reducers -  
+After calling the dispatch function, it, in turn, invokes the reducer function.
+Reducers contain the logic for updating the state, which we define, as they 
+have access to both the app state and the action we provided when calling 
+the dispatch function.
+
+4. Slice - 
+An app may consist of multiple features. For each feature, we create a "slice", 
+which is essentially a collection of reducer logic and actions specific to that 
+particular feature.
+
+----------------------------------------------------------------------------------------------
+Install these 2 packages first - 
+
+Command - npm install @reduxjs/toolkit react-redux
+
+----------------------------------------------------------------------------------------------
+
+Steps - 
+
+1. Make a store.js and create a global context for it using Provider tag 
+(avaible in react-redux) so that we can access store anywhere 
+
+Ex - //inside store.js 
+
+import { configureStore } from "@reduxjs/toolkit";
+
+export const store = configureStore({
+  reducer: {},
+});
+
+
+// Making a global context in main.jsx 
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
+import "./index.css";
+
+import { Provider } from "react-redux";
+import { store } from "./Store.js";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>
+);
+
+
+
+2. Make a slice, in path(src/features/counters/counterSlice) - 
+
+Ex - //In counterSlice.js
+
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = { count: 0 };
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState: initialState,
+});
+
+const counterReducer = counterSlice.reducer;
+
+export default counterReducer;
+
+
+3. Ab is slice ko store mei daalo - 
+
+// In Store.js 
+import { configureStore } from "@reduxjs/toolkit";
+import counterReducer from "./features/counters/counterSlice";
+
+export const store = configureStore({
+  reducer: {
+    counter: counterReducer,
+  },
+});
+
+
+4. useSelector - The useSelector hook allows access to the state stored in a Redux store
+
+// in App.jsx 
+
+import "./App.css";
+import { useSelector } from "react-redux";
+
+function App() {
+  const { count } = useSelector((state) => {
+    return state.counter;
+  });
+
+  console.log(count);
+  return (
+    <>
+      <h2>count:{count}</h2>
+      <button>Increase</button>
+      <button>Reset </button>
+      <button>Decrease</button>
+    </>
+  );
+}
+
+export default App;
+
+5. Write all logic in slice only(inside reducers) - 
+
+Ex - in counterSlice.js 
+
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = { count: 10 };
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState: initialState,
+  reducers: {
+    increament: (state) => {
+      state.count += 1;
+    },
+    decreament: (state) => {
+      state.count -= 1;
+    },
+    reset: (state) => {
+      state.count = 0;
+    },
+  },
+});
+
+export const { increament, decreament, reset } = counterSlice.actions;
+
+const counterReducer = counterSlice.reducer;
+export default counterReducer;
+
+Note - . Inside reducer, its a key-value pair which accepts a callback function. 
+       . Though it seems like ki hum bas count update kar rhe hai,
+         but behind the scenes redux poora component re-render kar raha hai.
+       . Hum har key inside reducer ko export kar rhe hai.
+       . Hum reducer ko export karte hai bas!!!!!
+
+
+6. Finally, importing all the action keys and using dispatch function in app.jsx 
+   to complete the project. 
+
+Ex - // in App.jsx 
+
+import "./App.css";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  increament,
+  decreament,
+  reset,
+} from "./features/counters/counterSlice";
+
+function App() {
+  const { count } = useSelector((state) => {
+    return state.counter;
+  });
+
+  const dispatch = useDispatch();
+
+  return (
+    <>
+      <h2>count:{count}</h2>
+      <button
+        onClick={() => {
+          dispatch(increament());
+        }}
+      >
+        Increase
+      </button>
+      <button
+        onClick={() => {
+          dispatch(reset());
+        }}
+      >
+        Reset{" "}
+      </button>
+      <button
+        onClick={() => {
+          dispatch(decreament());
+        }}
+      >
+        Decrease
+      </button>
+    </>
+  );
+}
+
+export default App;
+
+
+
+
+

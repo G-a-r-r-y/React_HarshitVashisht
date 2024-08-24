@@ -1,0 +1,30 @@
+Hooks in React  - 
+Hooks are functions that let you “hook into” React state and lifecycle features from function components. 
+
+1. In React we cannot use normal variables to change the UI
+   We use the useState hook 
+
+Note - a. For this we first have to import useState hook, iska syntax ek baar dekh lena 
+       b. useState returns an array consisting [stateValue, functionToUpdateThatStateValue]
+
+       useState(defaultValue) ---> [stateValue, functionToUpdateThatStateValue]
+
+Ex - 
+    import { useState } from "react";
+
+    function App() {
+    const [firstName, setFirstName] = useState("Harshit");
+    function handleNameChange() {
+        setFirstName("John");
+    }
+
+    return (
+        <>
+        <h1>{firstName}</h1>
+        <button onClick={handleNameChange}>Change Name</button>
+        </>
+    );
+    }
+
+    export default App;
+

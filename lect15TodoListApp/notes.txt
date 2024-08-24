@@ -1,0 +1,29 @@
+Note - 
+Remember this syntax to extend a list 
+
+function addTodo(newTodo) {
+    setTodos((prevState) => {
+      return [...prevState, newTodo];
+    });
+  }
+
+Note - method to check for blank input
+  Ex - use trim
+     if (inputText.trim().length === 0) {
+      toast.error("Please fill input", {
+        autoClose: 2000,
+      });
+      return;
+    }
+
+Note - .error gives red color, .info will give blue color and etc
+
+
+Note - 
+<h1 className={`${completed ? "completed" : ""}`}>{title}</h1>
+
+Remember the method on how to cross a todo if completed
+
+Note - Remember about react icons library online 
+
+Note - Remember about react toastify library and usse app file mei likhte hai

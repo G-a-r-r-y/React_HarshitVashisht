@@ -1,0 +1,4 @@
+1. onSubmit form tag pe lagaya jaata hai
+
+2. onChannge ka use dhyaan rakho
+

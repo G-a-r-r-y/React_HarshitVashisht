@@ -1,0 +1,128 @@
+To check the performance of your react app - 
+1. Open Console
+2. Go to Profiler Part 
+3. Now use the flameGraph, etc features to now which component 
+get rendered how many times by using which feature on the page and 
+how much time does it take for it to get render. 
+
+Note - remember when the current component get re-rendered toh uske saare 
+       children components bhi re-render hote hai automatically and it
+       causes performance issues.
+
+
+Solutions - 
+
+1. Use Children props  
+2. Using memo 
+
+--------------------------------------------------------------------------------
+Using children Props - 
+
+Ex - Basic App - 
+
+// In BasicApp file - 
+
+import InputForm from "./InputForm";
+import ExtraComponent from "./ExtraComponent";
+function BasicApp() {
+  console.log("basic app rendered");
+  return (
+    <div>
+      <h1>Basic App</h1>
+      <InputForm>
+        <ExtraComponent />
+      </InputForm>
+    </div>
+  );
+}
+export default BasicApp;
+
+Note - ExtraComponent is passed as children prop to inputForm 
+
+// In InputForm File - 
+
+import { useState } from "react";
+
+function InputForm({ children }) {
+  const [username, setUsername] = useState("");
+  console.log("input form rendered");
+  function handleSubmit(e) {
+    e.preventDefault();
+  }
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="username"
+        id="username"
+        onChange={(e) => setUsername(e.target.value)}
+        value={username}
+        autoComplete="off"
+      />
+      {children}
+      <button onClick={() => setUsername("")}>Clear Input</button>
+    </form>
+  );
+}
+export default InputForm;
+
+---------------------------------------------------------------------------
+Using memo - 
+
+Process - 
+1. Joh child component re-render ho rha hai saath saath usko with memo export karo
+2. Jab uss child component ko call kar rhe ho toh phir joh state change hone par 
+   child component ko re-render karna chahte ho, usse as a prop pass kardo bas.
+
+Ex - Basic App  - 
+
+// in ExtraComponent (child component) - 
+
+import { memo } from "react";
+
+function ExtraComponent() {
+  console.log("extra component rendered");
+  return (
+    <div className="card" style={{ backgroundColor: "#e8e6e6" }}>
+      <h2>Extra Component</h2>
+      <p>
+        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt, culpa!
+      </p>
+    </div>
+  );
+}
+export default memo(ExtraComponent);
+
+Note - memo import and export kiya hai 
+
+// in InputForm (current component)-
+
+import { useState } from "react";
+import ExtraComponent from "./ExtraComponent";
+
+function InputForm() {
+  const [username, setUsername] = useState("");
+  console.log("input form rendered");
+  function handleSubmit(e) {
+    e.preventDefault();
+  }
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="username"
+        id="username"
+        onChange={(e) => setUsername(e.target.value)}
+        value={username}
+        autoComplete="off"
+      />
+      <ExtraComponent username={username} />
+      <button onClick={() => setUsername("")}>Clear Input</button>
+    </form>
+  );
+}
+export default InputForm;
+
+Note - since <ExtraComponent username={username} /> is passed toh jab jab username 
+       change hoga, ExtraComponent re-render hoga.
+       If we don't want this, just write - <ExtraComponent />

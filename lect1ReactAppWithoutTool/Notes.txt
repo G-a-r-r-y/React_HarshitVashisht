@@ -1,0 +1,29 @@
+-->
+1. React:
+    Let’s create reusable pieces of UI called components.
+    Helps you build user interfaces (UIs) in JavaScript.
+    Makes it easy to update and show UI changes based on data.
+    
+2. React DOM:
+    Specifically deals with showing React components on web pages.
+    Without ReactDOM, React wouldn’t know how to display things on a web page.
+    Takes care of connecting your React code to the actual HTML on a webpage.
+
+In simple terms, React is like the architect who designs how things should look, 
+and ReactDOM is the construction worker who puts those designs into action on a website. 
+If you’re building web pages with React, you use both React and ReactDOM.
+
+-->
+Functions name should always start with a Capital letter because of react rules
+
+-->
+We use className instead of class cause class word is reserved.
+
+-->
+For JSX syntax - 
+1. First change the type of your js to type="text/jsx"
+2. Connect Babel (converts jsx to actual react code)
+Babel is a toolchain that is mainly used to convert ECMAScript 2015+ code into a backwards 
+compatible version of JavaScript in current and older browsers or environments. 
+
+Note - can call function in jsx with <FunctionName/>

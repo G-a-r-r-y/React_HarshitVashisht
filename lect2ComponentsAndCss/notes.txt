@@ -1,0 +1,16 @@
+1. Command to make a new ReactApp - 
+npx create-react-app APPNAME
+
+2. How to run a React App -
+npm start
+Note - npm start tab hi likho jab path sahi select kar rakha ho(App tak path pahucho pehle)
+
+3. Hum joh bhi kaam karte hai src folder mei hi karte hai
+
+4. The React StrictMode helps to detect the use of such unsafe methods. 
+    Once enabled, it displays a list of all components using unsafe lifecycle methods 
+    as warning messages. Warns about the usage of the legacy string ref API: Initially, 
+    there were two methods to manage refs- legacy string ref API and the callback API.
+
+5. Joh bhi hum code likhte hai woh index.html mei root div mei jaata hai
+

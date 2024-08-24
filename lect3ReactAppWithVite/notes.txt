@@ -1,0 +1,27 @@
+Vite. js is a build tool that is designed to be fast and lightweight. 
+It uses native ES modules and a native development server to provide a 
+fast and seamless development experience. Vite. js also supports code 
+splitting and hot reloading.
+
+1. How to start a program with vite - 
+command - npm create vite@latest
+Then write project Name 
+Then select frameword - React 
+Then select variant - Javascript
+
+Done. Now run:
+  cd my-first-app
+  npm install
+  npm run dev
+
+2. .eslintrc.cjs is a file for error handling
+
+3. to run application - npm run dev 
+
+4. saara kaam src ke ander hi hoga
+
+5. Difference between React and vite 
+   React - index.js , npm start , use js files  
+   Vite - main.jsx , npm run dev , use jsx files  
+
+Note - functions name capital letter se start karne hai 

@@ -1,0 +1,39 @@
+{
+  "todos": [
+    {
+      "id": "1",
+      "title": "Book tickets",
+      "completed": true
+    },
+    {
+      "id": "2",
+      "title": "Do homeWork",
+      "completed": false
+    },
+    {
+      "id": "3",
+      "title": "Play Football",
+      "completed": true
+    },
+    {
+      "id": "60d3",
+      "title": "Pay fees",
+      "completed": false
+    },
+    {
+      "id": "cf08",
+      "title": "Hello",
+      "completed": false
+    },
+    {
+      "id": "7590",
+      "title": "Hello",
+      "completed": false
+    },
+    {
+      "id": "d546",
+      "title": "",
+      "completed": true
+    }
+  ]
+}

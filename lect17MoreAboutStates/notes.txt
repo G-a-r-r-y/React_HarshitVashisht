@@ -1,0 +1,128 @@
+1. Agar ek variable form hua hai by using different state variables
+   toh uske liye ek aur state declare karne ki zarurat nhi hai 
+
+Ex - 
+function UserForm() {
+  const [fName, setfName] = useState("");
+  const [lName, setlName] = useState("");
+
+  return (
+    <>
+      <label htmlFor="fName">Firstname: </label>
+      <input
+        type="text"
+        id="fName"
+        name="fName"
+        value={fName}
+        onChange={(e) => {
+          setfName(e.target.value);
+        }}
+      />
+
+      <br />
+      <br />
+      <label htmlFor="lName">Lastname: </label>
+      <input
+        type="text"
+        id="lName"
+        name="lName"
+        value={lName}
+        onChange={(e) => {
+          setlName(e.target.value);
+        }}
+      />
+
+      <br />
+      <br />
+      <p>FirstName - {fName}</p>
+      <p>LastName - {lName}</p>
+      <p>Full Name - {`${fName}${lName}`}</p>
+    </>
+  );
+}
+
+Note - Jab bhi koi component render hota hai toh uske saare children children bhi bydefault ussi waqt 
+       render hote hai but not parent components.
+
+-------------------------------------------------------------------------------------------------------------
+
+2. setFunctions in useState are async in nature
+
+Ex - 
+function Async() {
+  const [count, setCount] = useState(0);
+  function handleClick() {
+    console.log("Count's value - ", count);
+    setCount(count + 1);
+    console.log("Count's value - ", count);
+  }
+  return (
+    <>
+      <h1>Count - {count}</h1>
+      <button onClick={handleClick}>Increase</button>
+    </>
+  );
+}
+
+------------------------------------------------------------------------------------------------------------
+3. Warning about props - 
+
+Never change the value of props, remember its a read only property
+
+Ex - 
+import React from "react";
+
+function WarningAboutProps(props) {
+  let { count } = props;
+  count = 1000;
+  return <h1>Count - {count}</h1>;
+}
+
+export default WarningAboutProps;
+
+-----------------------------------------------------------------------------------------------
+4. Warning about keys  - 
+
+Ex - 
+function KeysWarning() {
+  const list = [
+    { id: 1, Name: "Garvit", Age: 12 },
+    { id: 2, Name: "Akshat", Age: 1 },
+    { id: 3, Name: "Boondi", Age: 33 },
+    { id: 4, Name: "Raita", Age: 12 },
+  ];
+
+  function randomNumber() {}
+  return (
+    <>
+      {list.map((item) => {
+        return <PrintList {...item} key={uuid()} />;
+      })}
+    </>
+  );
+}
+
+Note - hum kabhi bhi keys aise pass nhi karte cause jab bhi component render hoga
+       harr baar key badal jaayegi which is not gud.
+
+------------------------------------------------------------------------------------
+
+4. Lifting up a state - 
+
+Lifting state up is a technique used in React to share state between multiple components. 
+Instead of each component having its own local state, the state is lifted up to their 
+closest common ancestor. This common ancestor then passes the state down to the 
+components through props.
+
+----------------------------------------------------------------------------------------
+5. WhiteSpaces in react - 
+
+Note - we can add whiteSpaces in react with the help of {" "}
+Ex - 
+    <h2>
+        Welcome{" "}
+        <span>CodeProg</span>{" "}
+        we will teach you everything from scratch.
+    </h2>
+
+----------------------------------------------------------------------------------------

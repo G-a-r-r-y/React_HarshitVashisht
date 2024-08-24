@@ -1,0 +1,154 @@
+1. Radion Buttons - 
+
+function Radio() {
+  const [gender, setGender] = useState("male");
+
+  return (
+    <>
+      <h1>Radio Buttons </h1>
+
+      <label htmlFor="male">Male</label>
+      <input
+        type="radio"
+        checked={gender === "male"}
+        onChange={() => {
+          setGender("male");
+        }}
+      />
+
+      <br />
+      <label htmlFor="female">female</label>
+      <input
+        type="radio"
+        checked={gender === "female"}
+        onChange={() => {
+          setGender("female");
+        }}
+      />
+    </>
+  );
+}
+
+export default Radio;
+
+Note -1. Saare radio buttons mei ek hi useState call hoga 
+      2. Checked property kaise use karte hai, keep that in mind 
+
+------------------------------------------------------------------------------------------------------
+2. Form input with single Function - 
+
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    gmail: "",
+    address: "",
+  });
+
+  function handleChange(e) {
+    setFormData((prevState) => {
+      return { ...prevState, [e.target.id]: e.target.value };
+    });
+  }
+  function handleSubmit(e) {
+    e.preventDefault();
+    console.log(formData);
+  }
+
+Note - remember the use of e.target.id and e.target.value
+
+-----------------------------------------------------------------------------------------------------
+3. Form Input Using useRef - 
+
+useRef is primarily used to access and manipulate the DOM or store mutable values without 
+triggering re-renders. It provides a mutable reference that persists across component renders. 
+On the other hand, useState is used for managing component state, triggering re-renders when the state updates.
+
+Note - useRef returns an object with a single key value pair where the key is current
+
+Ex 1 - 
+function FormInputUsingUseRef() {
+  console.log("Component rendered");
+  const username = useRef("Harshit");
+  const handleClick = () => {
+    username.current = "Garvit";
+    console.log(username);
+  };
+
+  return (
+    <>
+      <h1>{username.current}</h1>
+      <button onClick={handleClick}>Change Name</button>
+    </>
+  );
+
+Note - humme username.current print karwana hoga naaki only username
+
+Ex 2 -
+function FormInputUsingUseRefEx2() {
+  console.log("Component Rendered");
+  const h1Ref = useRef();
+  function handleClick() {
+    const h1Element = h1Ref.current;
+    h1Element.textContent = "Hi Garvit";
+    h1Element.style.background = "blue";
+  }
+
+  return (
+    <>
+      <h1 ref={h1Ref}>Hello There</h1>
+      <button onClick={handleClick}>Change Content</button>
+    </>
+  );
+}
+
+Note - We use ref={} property and in this the current value is a reference to html Element
+
+Ex 3 - 
+function FormInputUsingUseRefEx3() {
+  const usernameRef = useRef();
+  const passwordRef = useRef();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(usernameRef.current.value);
+    console.log(passwordRef.current.value);
+  };
+
+  return (
+    <>
+      <form action="">
+        <label htmlFor="username">Username:</label>
+        <input type="text" name="username" id="username" ref={usernameRef} />
+        <br />
+        <br />
+        <label htmlFor="password">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          ref={passwordRef}
+        />
+        <br />
+        <br />
+        <button type="submit" onClick={handleSubmit}>
+          Submit
+        </button>
+      </form>
+    </>
+  );
+}
+
+Note- 1. Username and Password ke liye alag alag useRef create huye hai  
+      2. Reference input tag ka diya hai cause input toh wahi stored hoga 
+        and to print, its username.current.value cause current mei bas input tag hai, and humme uski
+        value chahiye.
+
+---------------------------------------------------------------------------------------------------------
+Controlled Vs uncontrolled components - 
+
+In a controlled component react, state handles all the form data, whereas, in an uncontrolled component, 
+the HTML form element data is managed by only the DOM. If you are using a controlled component,
+you are in control of your form input values. The developer can decide what to insert or not and where to insert it.
+
+We can create uncontrolled components using useRef.
+Prefer to use useState instead of useRef.

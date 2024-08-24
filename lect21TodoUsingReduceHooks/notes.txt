@@ -1,0 +1,12 @@
+const [todos, dispatch] = useReducer(reducer, initialTodos);'
+
+here dispatch is like an object only with type property
+but ismei hum or bhi objects/key value pairs pass kar sakte hai 
+ 
+Ex - 
+function handleToggle() {
+    dispatch({ type: "TOGGLE_TODO", payload: { id: id } });
+  }
+
+Here - dispatch object ke ander type and payload hai where payload is also an object 
+      with id key value pair.

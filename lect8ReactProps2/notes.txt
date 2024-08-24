@@ -1,0 +1,72 @@
+1. Default Props - 
+
+Ex - //Calling in Greetings component - 
+    function App() {
+    return (
+        <>
+        <Greetings firstName="Garvit" />
+        <Greetings firstName="Aryan" lastName="Jaiswal" />
+        </>
+    );
+    }
+
+    //In Greetings component -  
+    function Greetings({ firstName, lastName = "Manral" }) {
+    return (
+        <>
+        <h1>Greetings {`${firstName} ${lastName}`} </h1>
+        </>
+    );
+    }
+
+Note - For this to work destructing issi tareeke se karni hogi
+
+2. Children Props - 
+
+Ex - //In App.js - 
+    <Greetings2 fName="Garvit" lName="Manral">
+        <h1>This is children Props</h1>
+    </Greetings2>
+
+    Note - here h1 is the children prop, which can be accessed using children key in props 
+            
+
+Very Important Note- 
+Jiss variable ko call karte huye value assign key thi, ussi same variable ko 
+use karenge destructuring karte waqt.
+
+
+3. Rendering an arary - 
+Ex - //In App.js - 
+      {users.map((user) => {
+        return <RenderingAnArray fName={user.fName} lName={user.lName} />;
+      })}
+
+    //In RenderingAnArray component - 
+    function RenderingAnArray(props) {
+        return (
+            <>
+            <h1>{`${props.fName} ${props.lName}`}</h1>
+            </>
+        );
+    }
+Note - for this we use map method
+
+                                                            OR
+
+We can pass the whole object using spread operator
+Ex- //In app.js - 
+    {users.map((users) => {
+        return <RenderingAnArray {...user} key={user.id} />;
+      })}
+
+    //in RenderingAnArray - 
+    function RenderingAnArray(props) {
+        console.log(props);
+        return <>{<h1>{`${props.fName} ${props.lName}`}</h1>}</>;
+    }
+
+
+Note - While rendering an array we also send a key with each item to uniquely identify it(Like for deleting an item, etc),
+       We don't use indices for this cause like if we delete index0 then index1 will become index0 and it is gonna be difficult
+       to remember the structure of the array.

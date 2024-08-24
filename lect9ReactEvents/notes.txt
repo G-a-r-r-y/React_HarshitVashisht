@@ -1,0 +1,84 @@
+1. How to write events - 
+
+function App() {
+  function handleClick(e) {
+    console.log(e);
+    console.log("You clicked me");
+  }
+  return (
+    <>
+      <h1>App</h1>
+      <button onClick={handleClick}>Click Me</button>
+    </>
+  );
+}
+
+export default App;
+
+Note - 1. handleClick function is written inside app 
+       2. onClick={handleClick} not onClick={handleCLick()} cause with (), it gets called once by itself
+       3. These events are same as js toh 'e' is an event object returned whose properties are usefull
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+2. Wrapper Concept -
+
+Problem - We need to call a function open clickEvent with arguments but 
+          we know ki 2. onClick={handleClick} not onClick={handleCLick()} cause with (), it gets called once by itself
+To solve this problem we use a wrapper function jiske ander main function with arguments passed hota hai 
+
+Ex - 
+function App() {
+  //Wrapper Concept -
+  function handleClick2(firstName, lastName) {
+    console.log(`${firstName} ${lastName}`);
+  }
+
+  //Wrapper Function  -
+  function wrapperFunction() {
+    handleClick2("Garvit", "Manral");
+  }
+
+  return (
+    <>
+      <h1>App</h1>
+      {/* For wrapper concept */}
+      <button onClick={wrapperFunction}>Click Me 2</button>
+    </>
+  );
+}
+
+export default App;
+
+
+Note - we generally write wrapper functions as - 
+
+function App() {
+  //Wrapper Concept -
+  function handleClick2(firstName, lastName) {
+    console.log(`${firstName} ${lastName}`);
+  }
+
+  //Wrapper Function  -
+  function wrapperFunction() {
+    handleClick2("Garvit", "Manral");
+  }
+
+  return (
+    <>
+      <h1>App</h1>
+      {/* Another Way to write wrapper functions -  */}
+      <button
+        onClick={(e) => {
+          e.target.textContent = "You clicked me bastard!!!";
+          handleClick2("abhinav", "Mittal");
+        }}
+      >
+        Click Me 3
+      </button>
+    </>
+  );
+}
+
+export default App;
+

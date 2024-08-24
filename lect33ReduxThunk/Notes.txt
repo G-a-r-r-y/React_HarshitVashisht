@@ -1,0 +1,518 @@
+Redux Thunk - 
+
+The word thunk is a programming term that means "A piece of code that does some delayed work".
+Rather than execute some logic now, we can write a function body or code that can be 
+used to perform the work later. 
+
+---------------------------------------------------------------------------------------------------
+Creating a Server - 
+
+1. Install npm packages 
+
+npm install @reduxjs/toolkit react-redux axios
+
+2. At the root lvl(inside Project Folder), make a json file 
+
+Ex -// in db.json
+
+{
+  "todos": [
+    {
+      "id": 1,
+      "title": "Book tickets",
+      "completed": true
+    },
+    {
+      "id": 2,
+      "title": "Do homeWork",
+      "completed": false
+    },
+    {
+      "id": 3,
+      "title": "Play Football",
+      "completed": true
+    }
+  ]
+}
+
+
+3. Write command on terminal 
+
+// install json packet first 
+npm install -g json-server  
+
+// now run server command 
+json-server --watch db.json --port 8001
+
+
+Note - another way is ki "json-server --watch db.json --port 8001" ko as 
+       a key value pair likhdo inside package.json's script .
+
+Ex -// inside package.json  
+"scripts": {
+    "dev": "vite",
+    "dev:server": "json-server --watch db.json --port 8001",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+
+Now just write the command below in the terminal 
+
+--> npm run dev:server
+
+--------------------------------------------------------------------------------------------------------
+Note - In this todoList App, we will get data from our created server
+       therefore, 1 terminal par server active rahega and doosre par hum 
+       apna todoApp chalayenge.
+
+--------------------------------------------------------------------------------------------------------
+
+Note - 
+
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = [
+  { id: "12dds", title: "Play FootBall", completed: true },
+  { id: "332wd", title: "Learn Music", completed: false },
+  { id: "dsf31", title: "Make art", completed: false },
+  { id: "56d21", title: "Do coding", completed: true },
+];
+
+const todoSlice = createSlice({
+  name: "todos",
+  initialState: initialState,
+  reducers: {
+    addTodo: (state, action) => {
+      state.push(action.payload);
+    },
+    removeTodo: (state, action) => {
+      return state.filter((todo) => todo.id !== action.payload.id);
+    },
+    toggleCompleted: (state, action) => {
+      state.forEach((todo) => {
+        if (todo.id === action.payload.id) {
+          todo.completed = !todo.completed;
+        }
+      });
+    },
+  },
+});
+
+export const { addTodo, removeTodo, toggleCompleted } = todoSlice.actions;
+export default todoSlice.reducer;
+
+Note - reducers likha hai ek jagah and export reducer kiya jaata hai, 
+       woh "s" bhi error cause kar sakta hai.
+
+-----------------------------------------------------------------------------------------------------------------
+
+Right now, changes were made only in todoSlice.js and TodosList 
+
+Note - 1. Thunk is created in todoSlice only, thunk create karne ka process
+          yaad rakho 
+       2. 3 possible cases hote hai, [pending, fulfilled, error] 
+
+Code - // in todoSlice - 
+
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const fetchTodos = createAsyncThunk("todos/fetch", async () => {
+  const response = await axios.get("http://localhost:8001/todos");
+  console.log(response.data);
+  return response.data;
+});
+
+const todosSlice = createSlice({
+  name: "todos",
+  initialState: [],
+  extraReducers: (builders) => {
+    builders.addCase(fetchTodos.pending, (state, action) => {
+      console.log("pending state.....");
+    });
+    builders.addCase(fetchTodos.fulfilled, (state, action) => {
+      console.log("fulfilled state.....");
+      console.log(action.payload);
+    });
+    builders.addCase(fetchTodos.rejected, (state, action) => {
+      console.log("rejected state.....");
+      console.log(action.error);
+    });
+  },
+});
+
+export const todosReducer = todosSlice.reducer;
+
+-------------------------------------------------------------------------------------------
+Ab hum todoSlice mei loading and error ke liye kuch variables banayenge 
+and phir unhe TodoList mei access karenge using useSelector.
+
+Code - // In todoSlice.js 
+
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const fetchTodos = createAsyncThunk("todos/fetch", async () => {
+  const response = await axios.get("http://localhost:8001/todos");
+  console.log(response.data);
+  return response.data;
+});
+
+const todosSlice = createSlice({
+  name: "todos",
+  initialState: {
+    isLoading: false,
+    error: null,
+    data: [],
+  },
+
+  extraReducers: (builders) => {
+    builders.addCase(fetchTodos.pending, (state, action) => {
+      console.log("fetch todos, pending state.....");
+      state.isLoading = true;
+    });
+    builders.addCase(fetchTodos.fulfilled, (state, action) => {
+      console.log("fetch todos, fulfilled state.....");
+      state.isLoading = false;
+      state.data = action.payload;
+    });
+    builders.addCase(fetchTodos.rejected, (state, action) => {
+      console.log("fetch todos, rejected state.....");
+      state.isLoading = false;
+      state.error = action.error;
+    });
+  },
+});
+
+export const todosReducer = todosSlice.reducer;
+
+
+// In TodoList.jsx - 
+
+import { useEffect } from "react";
+import { fetchTodos } from "./todoSlice";
+import { useDispatch, useSelector } from "react-redux";
+
+function TodosList() {
+  const { data: todos, isLoading, error } = useSelector((state) => state.todos);
+  console.log(todos);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchTodos());
+  }, []);
+
+  if (error) {
+    return <h1>{error.message}</h1>;
+  }
+
+  if (isLoading) {
+    return <h1>Loading....</h1>;
+  }
+  return (
+    <div>
+      {todos.map((todo) => {
+        return <p key={todo.id}>{todo.title}</p>;
+      })}
+    </div>
+  );
+}
+
+export default TodosList;
+------------------------------------------------------------------------------
+
+Now for addTodo - 
+
+Note - 1. This is a post method.
+       2. We don't need to provide an id, woh json apne app 
+          generate kardega.
+       3. humne title bhi pass kiya hai addTodo ke async mei
+       4. ismei pause karne ka code bhi likha hai todoSlice mei 
+
+
+Code - 
+// In todoSlice.js - 
+
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const fetchTodos = createAsyncThunk("todos/fetch", async () => {
+  const response = await axios.get("http://localhost:8001/todos");
+  await pause(1500);
+  return response.data;
+});
+
+export const addTodo = createAsyncThunk("todos/add", async (title) => {
+  const response = await axios.post("http://localhost:8001/todos", {
+    title: title,
+    completed: false,
+  });
+  await pause(1500);
+  return response.data;
+});
+
+const pause = (duration) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, duration);
+  });
+};
+
+const todosSlice = createSlice({
+  name: "todos",
+  initialState: {
+    isLoading: false,
+    error: null,
+    data: [],
+  },
+
+  extraReducers: (builders) => {
+    builders.addCase(fetchTodos.pending, (state, action) => {
+      console.log("fetch todos, pending state.....");
+      state.isLoading = true;
+    });
+    builders.addCase(fetchTodos.fulfilled, (state, action) => {
+      console.log("fetch todos, fulfilled state.....");
+      state.isLoading = false;
+      state.data = action.payload;
+    });
+    builders.addCase(fetchTodos.rejected, (state, action) => {
+      console.log("fetch todos, rejected state.....");
+      state.isLoading = false;
+      state.error = action.error;
+    });
+
+    builders.addCase(addTodo.pending, (state, action) => {
+      console.log("fetch todos, pending state.....");
+      state.isLoading = true;
+    });
+    builders.addCase(addTodo.fulfilled, (state, action) => {
+      console.log("fetch todos, fulfilled state.....");
+      state.isLoading = false;
+      state.data.push(action.payload);
+    });
+    builders.addCase(addTodo.rejected, (state, action) => {
+      console.log("fetch todos, rejected state.....");
+      state.isLoading = false;
+      state.error = action.error;
+    });
+  },
+});
+
+export const todosReducer = todosSlice.reducer;
+
+
+
+// in TodosForm.jsx - 
+
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addTodo } from "./todoSlice";
+
+function TodosForm() {
+  const [title, setTitle] = useState("");
+  const dispatch = useDispatch();
+  function handleSubmit(e) {
+    e.preventDefault();
+    dispatch(addTodo(title));
+    setTitle("");
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        value={title}
+        onChange={(e) => {
+          setTitle(e.target.value);
+        }}
+      />
+      <button type="submit">Add Todo</button>
+    </form>
+  );
+}
+
+export default TodosForm;
+
+---------------------------------------------------------------------------------
+
+Note -1.having same loading and error variables for both fetchTodos and addTodos
+        can cause some problems, So now we are gonna solve this issue 
+      2.Changes made in 3 files - todoSlice, TodosForm, TodosList 
+
+Code - 
+
+// In todoSlice.jsx - 
+
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const fetchTodos = createAsyncThunk("todos/fetch", async () => {
+  const response = await axios.get("http://localhost:8001/todos");
+  await pause(1500);
+  return response.data;
+});
+
+export const addTodo = createAsyncThunk("todos/add", async (title) => {
+  const response = await axios.post("http://localhost:8001/todos", {
+    title: title,
+    completed: false,
+  });
+  await pause(1500);
+  return response.data;
+});
+
+const pause = (duration) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, duration);
+  });
+};
+
+const todosSlice = createSlice({
+  name: "todos",
+  initialState: {
+    data: [],
+  },
+
+  extraReducers: (builders) => {
+    builders.addCase(fetchTodos.pending, (state, action) => {
+      console.log("fetch todos, pending state.....");
+    });
+    builders.addCase(fetchTodos.fulfilled, (state, action) => {
+      console.log("fetch todos, fulfilled state.....");
+      state.data = action.payload;
+    });
+    builders.addCase(fetchTodos.rejected, (state, action) => {
+      console.log("fetch todos, rejected state.....");
+      state.error = action.error;
+    });
+
+    builders.addCase(addTodo.pending, (state, action) => {
+      console.log("fetch todos, pending state.....");
+    });
+    builders.addCase(addTodo.fulfilled, (state, action) => {
+      console.log("fetch todos, fulfilled state.....");
+      state.data.push(action.payload);
+    });
+    builders.addCase(addTodo.rejected, (state, action) => {
+      console.log("fetch todos, rejected state.....");
+      state.error = action.error;
+    });
+  },
+});
+
+export const todosReducer = todosSlice.reducer;
+
+// In TodosForm.jsx - 
+
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addTodo } from "./todoSlice";
+
+function TodosForm() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [title, setTitle] = useState("");
+  const dispatch = useDispatch();
+  function handleSubmit(e) {
+    e.preventDefault();
+    setIsLoading(true);
+    dispatch(addTodo(title))
+      .then(() => {
+        setTitle("");
+      })
+      .unwrap()
+      .catch((err) => {
+        setError(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        value={title}
+        onChange={(e) => {
+          setTitle(e.target.value);
+        }}
+      />
+      {error && <p style={{ color: "red" }}></p>}
+      <button type="submit" disabled={isLoading}>
+        {isLoading ? "adding...." : "add"}
+      </button>
+    </form>
+  );
+}
+
+export default TodosForm;
+
+// in TodosList.jsx - 
+
+import { useEffect } from "react";
+import { fetchTodos } from "./todoSlice";
+import { useDispatch, useSelector } from "react-redux";
+
+function TodosList() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { data: todos } = useSelector((state) => state.todos);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    setIsLoading(true);
+    dispatch(fetchTodos())
+      .unwrap()
+      .catch((err) => {
+        setError(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  if (error) {
+    return <h1>{error.message}</h1>;
+  }
+
+  if (isLoading) {
+    return <h1>Loading....</h1>;
+  }
+  return (
+    <div>
+      {todos.map((todo) => {
+        return <p key={todo.id}>{todo.title}</p>;
+      })}
+    </div>
+  );
+}
+
+export default TodosList;
+
+
+Note - 
+
+dispatch(addNewPost({ title, content, user: userId })) will resolve to the latest action 
+that has been dispatched by that thunk. With .unwrap(), it will resolve to the value 
+of the fulfilled action, or throw on a rejected action. The idea here is that you 
+should be able to dispatch an asyncThunk without having to catch it every time, 
+but only if you really want to write more logic based on it.
+
+Doubt - unwrap is not a function, error de raha hai 
+----------------------------------------------------------------------------------------
+
+Doubt - delete karne ke baad page automatically refresh nhi ho raha 
+
+delete and patch ek baar dhyaan se dekho 
+
+
+
+
+
+

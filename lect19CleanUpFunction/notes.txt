@@ -1,0 +1,95 @@
+Clean Up functions - 
+It is written as a return function inside useEffect()
+
+1. When dependency array is empty - 
+It works when a component is unmounted from the screen.
+
+Ex - 
+useEffect(() => {
+    console.log("effect callback");
+    //CleanUp function
+    return function () {
+      console.log("cleanup function");
+    };
+  }, []);
+
+
+Note - Code for mounting and dismounting a component using checkboxes
+
+function App() {
+  const [showComponent, setShowComponent] = useState(true);
+  return (
+    <div>
+      <label htmlFor="showComponent">show Component</label>
+      <input
+        type="checkbox"
+        name="showComponent"
+        id="showComponent"
+        checked={showComponent}
+        onChange={() => {
+          setShowComponent(!showComponent);
+        }}
+      />
+      {showComponent && <CleanUpFunctionDemo />}
+    </div>
+  );
+}
+
+-------------------------------------------------------------------------------
+2. When dependency array is not empty -
+It works when a component is unmounted from the screen.
+                    AND 
+When the value of the varaible inside the dependency array changes - 
+a. component re-render
+b. cleanUp functino 
+c. useEffect runs 
+
+
+----------------------------------------------------------------------------------
+3. In strict Mode - 
+That is - 
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+Note - 
+When the compenent mounts 
+a. useEffect will run 
+b. cleanUp Function 
+c. useEffect will run 
+
+Note - this is only when component mounts!!!!
+       Jab woh dismount ho jaayega toh different previous rules hi 
+       follow honge
+
+-----------------------------------------------------------------------------------
+Code for focusing on input after mounting the element - 
+
+import React, { useEffect } from "react";
+import { useRef } from "react";
+
+function FocusOnInputOnMounting() {
+  const inputRef = useRef();
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
+
+  return (
+    <>
+      <label htmlFor="username">Username: </label>
+      <input ref={inputRef} type="text" name="username" id="username" />
+    </>
+  );
+}
+
+export default FocusOnInputOnMounting;
+
+------------------------------------------------------------------------------------
